@@ -36,7 +36,7 @@ class TelegramBot:
 
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         tg_chat_id = update.effective_chat.id
-        self.chat_session = self.chat_server.create_chat(chat_id=tg_chat_id)
+        self.chat_session = await self.chat_server.create_chat(chat_id=tg_chat_id)
         await context.bot.send_message(chat_id=update.effective_chat.id, text=TG_START_MESSAGE, parse_mode="Markdown")
         logger.info(f"Start command received: chatid: {update.message.chat_id}")
 
@@ -47,7 +47,7 @@ class TelegramBot:
         logger.info(f"Reset command received: chatid: {update.message.chat_id}")
 
     async def message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        response = self.chat_session.new_message(update.message.text)
+        response = await self.chat_session.new_message(update.message.text)
         logger.info(f"Message received: chatid: {update.message.chat_id}, message: {update.message.text}")
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response, parse_mode='Markdown')
         logger.info(f"Answer received: chatid: {update.message.chat_id}, message: {response}")

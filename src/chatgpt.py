@@ -19,11 +19,11 @@ class ChatGPTSession:
 
         self.model = model
 
-    def new_message(self, message: str) -> str:
+    async def new_message(self, message: str) -> str:
         self.messages.append(
             {"role": "user", "content": message}
         )
-        response = openai.ChatCompletion.create(
+        response = await openai.ChatCompletion.acreate(
             model=self.model,
             messages=self.messages,
         )
@@ -32,7 +32,7 @@ class ChatGPTSession:
             self.messages.append({"role": "assistant", "content": content})
         return content
 
-    def reset_messages(self):
+    async def reset_messages(self):
         self.messages = []
 
 
@@ -43,7 +43,7 @@ class ChatServer:
         openai.api_key = api_key
         openai.organization = org_name
 
-    def create_chat(self, chat_id: int, model: str = "gpt-3.5-turbo") -> ChatGPTSession:
+    async def create_chat(self, chat_id: int, model: str = "gpt-3.5-turbo") -> ChatGPTSession:
         chat = ChatGPTSession(model=model)
         self.chats[chat_id] = chat
         return chat
