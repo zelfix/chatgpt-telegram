@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
@@ -46,11 +47,19 @@ class TelegramBot:
                                        text="Весь контекст удален, начинаем новый чат с чистого листа")
         logger.info(f"Reset command received: chatid: {update.message.chat_id}")
 
-    async def message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    async def get_answer(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        # if for some reason we received a message without command /start call /start intentionally
+        if self.chat_session is None:
+            await self.start(update=update, context=context)
+            return
         logger.info(f"Message received: chatid: {update.message.chat_id}, message: {update.message.text}")
         response = await self.chat_session.new_message(update.message.text)
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response, parse_mode='Markdown')
         logger.info(f"Answer received: chatid: {update.message.chat_id}, message: {response}")
+
+    async def message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        # we don't freeze in the handler, but forward further processing of the request to asyncio
+        asyncio.create_task(self.get_answer(update=update, context=context))
 
     async def unknown(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id,
