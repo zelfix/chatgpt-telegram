@@ -47,8 +47,8 @@ class TelegramBot:
         logger.info(f"Reset command received: chatid: {update.message.chat_id}")
 
     async def message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        response = await self.chat_session.new_message(update.message.text)
         logger.info(f"Message received: chatid: {update.message.chat_id}, message: {update.message.text}")
+        response = await self.chat_session.new_message(update.message.text)
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response, parse_mode='Markdown')
         logger.info(f"Answer received: chatid: {update.message.chat_id}, message: {response}")
 
