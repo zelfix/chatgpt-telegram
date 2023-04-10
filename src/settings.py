@@ -9,6 +9,7 @@ API_KEY = os.getenv('API_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 SUPPORTED_MODELS = ["gpt-3.5-turbo", "gpt-4"]
+MAX_MESSAGE_COUNT_IN_REQUEST = 5  # How many massages ChatGPT will handle in one request
 
 TG_START_MESSAGE = '''
     Привет! Я телеграм бот, который позволит Вам получить доступ к OpenAI ChatGPT.

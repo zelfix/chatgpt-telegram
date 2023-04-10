@@ -3,7 +3,7 @@ from typing import List, Dict
 
 import openai
 
-from settings import SUPPORTED_MODELS
+from settings import SUPPORTED_MODELS, MAX_MESSAGE_COUNT_IN_REQUEST
 
 
 class NotSupportedModel(Exception):
@@ -20,6 +20,9 @@ class ChatGPTSession:
         self.model = model
 
     async def new_message(self, message: str) -> str:
+        if len(self.messages) == MAX_MESSAGE_COUNT_IN_REQUEST:
+            self.messages.pop(0)
+
         self.messages.append(
             {"role": "user", "content": message}
         )
