@@ -20,7 +20,7 @@ class ChatGPTSession:
         self.model = model
 
     async def new_message(self, message: str) -> str:
-        if len(self.messages) == MAX_MESSAGE_COUNT_IN_REQUEST:
+        if len(self.messages) >= MAX_MESSAGE_COUNT_IN_REQUEST:
             self.messages.pop(0)
 
         self.messages.append(
